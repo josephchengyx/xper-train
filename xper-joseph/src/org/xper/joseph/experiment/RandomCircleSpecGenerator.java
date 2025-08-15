@@ -1,28 +1,56 @@
 package org.xper.joseph.experiment;
 
-import java.util.Random;
+import org.xper.Dependency;
 import org.xper.experiment.StimSpecGenerator;
 
 public class RandomCircleSpecGenerator implements StimSpecGenerator {
 
-    private Random rng;
+    @Dependency
+    public boolean solid;
 
-    public RandomCircleSpecGenerator() {
-        this.rng = new Random();
-    }
+    @Dependency
+    public double minSize;
+
+    @Dependency
+    public double maxSize;
+
+    @Dependency
+    public double minOffset;
+
+    @Dependency
+    public double maxOffset;
 
     @Override
     public String generateStimSpec() {
         CircleSpec stimSpec = new CircleSpec();
-        stimSpec.setSize(getRandomNumber(20, 100));
-        stimSpec.setSolid(true);
-        stimSpec.setTx(getRandomNumber(20, 100));
-        stimSpec.setTy(getRandomNumber(20, 100));
-        stimSpec.setTz(getRandomNumber(20, 100));
+        stimSpec.setSize(getRandomNumber(minSize, maxSize));
+        stimSpec.setSolid(solid);
+        stimSpec.setTx(getRandomNumber(minOffset, maxOffset));
+        stimSpec.setTy(getRandomNumber(minOffset, maxOffset));
+        stimSpec.setTz(0);
         return stimSpec.toXml();
     }
 
     private double getRandomNumber(double min, double max) {
-        return (max - min) * rng.nextDouble() + min;
+        return (max - min) * Math.random() + min;
+    }
+
+    public void setSolid(boolean solid) {
+        this.solid = solid;
+    }
+
+    public void setMinSize(double minSize) {
+        this.minSize = minSize;
+    }
+    public void setMaxSize(double maxSize) {
+        this.maxSize = maxSize;
+    }
+
+    public void setMinOffset(double minOffset) {
+        this.minOffset = minOffset;
+    }
+
+    public void setMaxOffset(double maxOffset) {
+        this.maxOffset = maxOffset;
     }
 }
