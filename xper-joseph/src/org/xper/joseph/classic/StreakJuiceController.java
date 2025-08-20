@@ -1,6 +1,7 @@
 package org.xper.joseph.classic;
 
 import org.xper.Dependency;
+import org.xper.classic.SlideEventListener;
 import org.xper.classic.TrialEventListener;
 import org.xper.classic.vo.TrialContext;
 import org.xper.juice.Juice;
@@ -8,7 +9,7 @@ import org.xper.juice.Juice;
 import java.sql.Timestamp;
 
 
-public class StreakJuiceController implements TrialEventListener {
+public class StreakJuiceController implements TrialEventListener, SlideEventListener {
 	
 	@Dependency
 	Juice juice;
@@ -54,6 +55,16 @@ public class StreakJuiceController implements TrialEventListener {
 	}
 
 	public void trialStop(long timestamp, TrialContext context) {
+	}
+
+	@Override
+	public void slideOn(int index, long timestamp) {
+
+	}
+
+	@Override
+	public void slideOff(int index, long timestamp, int frameCount) {
+
 	}
 
 	private void deliverReward() {

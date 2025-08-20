@@ -2,8 +2,9 @@ package org.xper.joseph.experiment;
 
 import org.xper.Dependency;
 import org.xper.experiment.StimSpecGenerator;
+import org.xper.joseph.classic.StreakEventListener;
 
-public class RandomCircleSpecGenerator implements StimSpecGenerator {
+public class RandomCircleSpecGenerator implements StimSpecGenerator, StreakEventListener {
 
     @Dependency
     public boolean solid;
@@ -31,6 +32,16 @@ public class RandomCircleSpecGenerator implements StimSpecGenerator {
         return stimSpec.toXml();
     }
 
+    @Override
+    public void successStreak() {
+        solid = true;
+    }
+
+    @Override
+    public void failureStreak() {
+        solid = false;
+    }
+
     private double getRandomNumber(double min, double max) {
         return (max - min) * Math.random() + min;
     }
@@ -42,6 +53,7 @@ public class RandomCircleSpecGenerator implements StimSpecGenerator {
     public void setMinSize(double minSize) {
         this.minSize = minSize;
     }
+
     public void setMaxSize(double maxSize) {
         this.maxSize = maxSize;
     }

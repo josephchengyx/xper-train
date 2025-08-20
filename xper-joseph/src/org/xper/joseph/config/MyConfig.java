@@ -16,6 +16,8 @@ import org.xper.experiment.StimSpecGenerator;
 import org.xper.experiment.TaskDataSource;
 import org.xper.experiment.mock.RandomTaskDataSource;
 import org.xper.joseph.classic.StimJuiceController;
+import org.xper.joseph.classic.StreakController;
+import org.xper.joseph.classic.StreakEventListener;
 import org.xper.joseph.classic.StreakJuiceController;
 import org.xper.joseph.drawing.MyTaskScene;
 import org.xper.joseph.experiment.RandomCircleSpecGenerator;
@@ -36,6 +38,9 @@ public class MyConfig {
 	ClassicConfig classicConfig;
 	@Autowired
 	AcqConfig acqConfig;
+
+	@ExternalValue("experiment.streak_threshold")
+	public int experimentStreakThreshold;
 
 	@Bean
 	public TaskScene taskScene() {
@@ -65,21 +70,23 @@ public class MyConfig {
 		return generator;
 	}
 
-//	@Bean
-//	public TrialEventListener juiceController() {
-//		StreakJuiceController controller = new StreakJuiceController();
-//		controller.setJuice(new NullDynamicJuice());
-//		controller.setDefaultReward(xperRewardDefaultSize());
-//		controller.setMaxReward(xperRewardMaxSize());
-//		return controller;
-//	}
-
 	@Bean
-	public StimJuiceController juiceController() {
+	public TrialEventListener juiceController() {
+//		StreakJuiceController controller = new StreakJuiceController();
 		StimJuiceController controller = new StimJuiceController();
 		controller.setJuice(new NullDynamicJuice());
 		controller.setRewardRatio(xperRewardCircleSizeRatio());
 		controller.setMaxReward(xperStimCircleMaxSize());
+		return controller;
+	}
+
+	@Bean
+	public StreakController streakController() {
+		StreakController controller = new StreakController();
+		controller.setStreakThreshold(experimentStreakThreshold);
+		List<StreakEventListener> listeners = new LinkedList<>();
+		listeners.add((StreakEventListener) stimSpecGenerator());
+		controller.setStreakEventListeners(listeners);
 		return controller;
 	}
 
@@ -94,6 +101,7 @@ public class MyConfig {
 		trialEventListener.add(classicConfig.trialSyncController());
 		trialEventListener.add(classicConfig.dataAcqController());
 		trialEventListener.add(classicConfig.jvmManager());
+		trialEventListener.add(streakController());
 		return trialEventListener;
 	}
 
@@ -103,7 +111,7 @@ public class MyConfig {
 		listeners.add(classicConfig.slideEventLogger());
 		listeners.add(classicConfig.experimentProfiler());
 		listeners.add(classicConfig.messageDispatcher());
-		listeners.add(juiceController());
+		listeners.add((SlideEventListener) juiceController());
 		return listeners;
 	}
 
