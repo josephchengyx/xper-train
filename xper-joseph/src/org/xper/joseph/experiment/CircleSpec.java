@@ -7,6 +7,8 @@ public class CircleSpec {
 
 	boolean solid;
 
+	String color;
+
 	double tx;
 
 	double ty;
@@ -41,6 +43,7 @@ public class CircleSpec {
 	public CircleSpec(CircleSpec d) {
 		size = d.getSize();
 		solid = d.getSolid();
+		color = d.getColor();
 		tx = d.getTx();
 		ty = d.getTy();
 		tz = d.getTz();
@@ -57,6 +60,12 @@ public class CircleSpec {
 	}
 	public void setSolid(boolean solid) {
 		this.solid = solid;
+	}
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
 	}
 	public double getTx() {
 		return tx;

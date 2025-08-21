@@ -63,6 +63,9 @@ public class MyConfig {
 	public StimSpecGenerator stimSpecGenerator() {
 		RandomCircleSpecGenerator generator = new RandomCircleSpecGenerator();
 		generator.setSolid(xperStimCircleSolid());
+		generator.setDefaultColor(xperStimDefaultColor());
+		generator.setSuccessColor(xperStimSuccessColor());
+		generator.setFailureColor(xperStimFailureColor());
 		generator.setMinSize(xperStimCircleMinSize());
 		generator.setMaxSize(xperStimCircleMaxSize());
 		generator.setMinOffset(xperStimCircleMinOffset());
@@ -91,22 +94,22 @@ public class MyConfig {
 	}
 
 	@Bean (scope = DefaultScopes.PROTOTYPE)
-	public List<TrialEventListener> trialEventListeners () {
-		List<TrialEventListener> trialEventListener = new LinkedList<>();
-		trialEventListener.add(classicConfig.eyeMonitorController());
-		trialEventListener.add(classicConfig.trialEventLogger());
-		trialEventListener.add(classicConfig.experimentProfiler());
-		trialEventListener.add(classicConfig.messageDispatcher());
-		trialEventListener.add(juiceController());
-		trialEventListener.add(classicConfig.trialSyncController());
-		trialEventListener.add(classicConfig.dataAcqController());
-		trialEventListener.add(classicConfig.jvmManager());
-		trialEventListener.add(streakController());
-		return trialEventListener;
+	public List<TrialEventListener> trialEventListeners() {
+		List<TrialEventListener> listeners = new LinkedList<>();
+		listeners.add(classicConfig.eyeMonitorController());
+		listeners.add(classicConfig.trialEventLogger());
+		listeners.add(classicConfig.experimentProfiler());
+		listeners.add(classicConfig.messageDispatcher());
+		listeners.add(juiceController());
+		listeners.add(classicConfig.trialSyncController());
+		listeners.add(classicConfig.dataAcqController());
+		listeners.add(classicConfig.jvmManager());
+		listeners.add(streakController());
+		return listeners;
 	}
 
 	@Bean(scope = DefaultScopes.PROTOTYPE)
-	public List<SlideEventListener> slideEventListeners () {
+	public List<SlideEventListener> slideEventListeners() {
 		List<SlideEventListener> listeners = new LinkedList<>();
 		listeners.add(classicConfig.slideEventLogger());
 		listeners.add(classicConfig.experimentProfiler());
@@ -118,6 +121,21 @@ public class MyConfig {
 	@Bean(scope = DefaultScopes.PROTOTYPE)
 	public Boolean xperStimCircleSolid() {
 		return Boolean.parseBoolean(baseConfig.systemVariableContainer().get("xper_stim_circle_solid", 0));
+	}
+
+	@Bean(scope = DefaultScopes.PROTOTYPE)
+	public String xperStimDefaultColor() {
+		return baseConfig.systemVariableContainer().get("xper_stim_default_color", 0);
+	}
+
+	@Bean(scope = DefaultScopes.PROTOTYPE)
+	public String xperStimSuccessColor() {
+		return baseConfig.systemVariableContainer().get("xper_stim_success_color", 0);
+	}
+
+	@Bean(scope = DefaultScopes.PROTOTYPE)
+	public String xperStimFailureColor() {
+		return baseConfig.systemVariableContainer().get("xper_stim_failure_color", 0);
 	}
 
 	@Bean(scope = DefaultScopes.PROTOTYPE)

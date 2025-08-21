@@ -8,9 +8,10 @@ import org.xper.joseph.classic.StreakEventListener;
 import java.util.List;
 
 public class StreakController implements TrialEventListener {
-    private int successStreakSize = 0;
 
-    private int failureStreakSize = 0;
+    private boolean isSuccess = true;
+
+    private int streakSize = 0;
 
     @Dependency
     public int streakThreshold;
@@ -68,9 +69,16 @@ public class StreakController implements TrialEventListener {
     }
 
     private void onSuccess() {
-        failureStreakSize = 0;
-        successStreakSize++;
-        if (successStreakSize > streakThreshold) {
+        if (isSuccess) {
+            streakSize++;
+        } else {
+            streakSize = 0;
+            isSuccess = true;
+            for (StreakEventListener listener: streakEventListeners) {
+                listener.streakBreak();
+            }
+        }
+        if (isSuccess && streakSize > streakThreshold) {
             for (StreakEventListener listener: streakEventListeners) {
                 listener.successStreak();
             }
@@ -78,9 +86,16 @@ public class StreakController implements TrialEventListener {
     }
 
     private void onFailure() {
-        successStreakSize = 0;
-        failureStreakSize++;
-        if (failureStreakSize > streakThreshold) {
+        if (!isSuccess) {
+            streakSize++;
+        } else {
+            streakSize = 0;
+            isSuccess = false;
+            for (StreakEventListener listener: streakEventListeners) {
+                listener.streakBreak();
+            }
+        }
+        if (!isSuccess && streakSize > streakThreshold) {
             for (StreakEventListener listener: streakEventListeners) {
                 listener.failureStreak();
             }
