@@ -4,7 +4,7 @@ import org.xper.Dependency;
 import org.xper.experiment.StimSpecGenerator;
 import org.xper.joseph.classic.StreakEventListener;
 
-public class RandomCircleSpecGenerator implements StimSpecGenerator, StreakEventListener {
+public class RandomCircleSpecGenerator implements DynamicStimSpecGenerator, StreakEventListener {
 
     @Dependency
     public boolean solid;
@@ -18,8 +18,6 @@ public class RandomCircleSpecGenerator implements StimSpecGenerator, StreakEvent
     @Dependency
     public String failureColor;
 
-    private String color;
-
     @Dependency
     public double minSize;
 
@@ -32,16 +30,58 @@ public class RandomCircleSpecGenerator implements StimSpecGenerator, StreakEvent
     @Dependency
     public double maxOffset;
 
+    private String color;
+
+    private Double size;
+
+    private Double tx;
+
+    private Double ty;
+
+    private Double tz;
+
     @Override
     public String generateStimSpec() {
         CircleSpec stimSpec = new CircleSpec();
-        stimSpec.setSize(getRandomNumber(minSize, maxSize));
         stimSpec.setSolid(solid);
         stimSpec.setColor(color);
-        stimSpec.setTx(getRandomNumber(minOffset, maxOffset));
-        stimSpec.setTy(getRandomNumber(minOffset, maxOffset));
-        stimSpec.setTz(0);
+        if (size == null) { stimSpec.setSize(getRandomNumber(minSize, maxSize)); }
+        else { stimSpec.setSize(size); }
+        if (tx == null) { stimSpec.setTx(getRandomNumber(minOffset, maxOffset)); }
+        else { stimSpec.setTx(tx); }
+        if (ty == null) { stimSpec.setTy(getRandomNumber(minOffset, maxOffset)); }
+        else { stimSpec.setTy(ty); }
+        if (tz == null) { stimSpec.setTz(0); }
+        else { stimSpec.setTz(0); }
         return stimSpec.toXml();
+    }
+
+    @Override
+    public void setParam(String param, Object value) {
+        switch (param) {
+            case "size":
+                if (value instanceof Double) {
+                    setSize((double) value);
+                }
+                break;
+            case "tx":
+                if (value instanceof Double) {
+                    setTx((double) value);
+                }
+                break;
+            case "ty":
+                if (value instanceof Double) {
+                    setTy((double) value);
+                }
+                break;
+            case "tz":
+                if (value instanceof Double) {
+                    setTz((double) value);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -94,5 +134,37 @@ public class RandomCircleSpecGenerator implements StimSpecGenerator, StreakEvent
 
     public void setMaxOffset(double maxOffset) {
         this.maxOffset = maxOffset;
+    }
+
+    public void setSize(double size) {
+        this.size = size;
+    }
+
+    public void resetSize() {
+        this.size = null;
+    }
+
+    public void setTx(double tx) {
+        this.tx = tx;
+    }
+
+    public void resetTx() {
+        this.tx = null;
+    }
+
+    public void setTy(double ty) {
+        this.ty = ty;
+    }
+
+    public void resetTy() {
+        this.ty = null;
+    }
+
+    public void setTz(double tz) {
+        this.tz = tz;
+    }
+
+    public void resetTz() {
+        this.tz = null;
     }
 }

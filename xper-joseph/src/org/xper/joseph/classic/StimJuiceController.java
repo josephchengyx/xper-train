@@ -4,6 +4,7 @@ import org.xper.Dependency;
 import org.xper.classic.SlideEventListener;
 import org.xper.classic.TrialEventListener;
 import org.xper.classic.vo.TrialContext;
+import org.xper.experiment.ExperimentTask;
 import org.xper.joseph.experiment.CircleSpec;
 import org.xper.juice.Juice;
 
@@ -66,7 +67,10 @@ public class StimJuiceController implements TrialEventListener, SlideEventListen
 	}
 
 	public void slideOn(int index, long timestamp) {
-		stimSizeList.add(CircleSpec.fromXml(currentContext.getCurrentTask().getStimSpec()).getSize());
+		ExperimentTask currentTask = currentContext.getCurrentTask();
+		if (currentTask != null) {
+			stimSizeList.add(CircleSpec.fromXml(currentTask.getStimSpec()).getSize());
+		}
 	}
 
 	public void slideOff(int index, long timestamp, int frameCount) {

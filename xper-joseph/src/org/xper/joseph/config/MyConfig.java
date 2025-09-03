@@ -20,7 +20,9 @@ import org.xper.joseph.classic.StreakController;
 import org.xper.joseph.classic.StreakEventListener;
 import org.xper.joseph.classic.StreakJuiceController;
 import org.xper.joseph.drawing.MyTaskScene;
+import org.xper.joseph.experiment.DynamicStimSpecGenerator;
 import org.xper.joseph.experiment.RandomCircleSpecGenerator;
+import org.xper.joseph.experiment.TaskGenerator;
 import org.xper.juice.mock.NullDynamicJuice;
 
 import java.util.LinkedList;
@@ -42,6 +44,9 @@ public class MyConfig {
 	@ExternalValue("experiment.streak_threshold")
 	public int experimentStreakThreshold;
 
+	@ExternalValue("experiment.task_count")
+	public int experimentTaskCount;
+
 	@Bean
 	public TaskScene taskScene() {
 		MyTaskScene scene = new MyTaskScene();
@@ -54,13 +59,30 @@ public class MyConfig {
 
 	@Bean
 	public TaskDataSource taskDataSource() {
+		return classicConfig.databaseTaskDataSource();
+	}
+
+	@Bean
+	public TaskDataSource randomTaskDataSource() {
 		RandomTaskDataSource dataSource = new RandomTaskDataSource();
 		dataSource.setGenerator(stimSpecGenerator());
 		return dataSource;
 	}
 
 	@Bean
-	public StimSpecGenerator stimSpecGenerator() {
+	public TaskGenerator taskGenerator() {
+		TaskGenerator generator = new TaskGenerator();
+		generator.setDbUtil(baseConfig.dbUtil());
+		generator.setGlobalTimeUtil(baseConfig.localTimeUtil());
+		generator.setGenerator(stimSpecGenerator());
+		generator.setMaxSize(xperStimCircleMaxSize());
+		generator.setMinSize(xperStimCircleMinSize());
+		generator.setTaskCount(experimentTaskCount);
+		return generator;
+	}
+
+	@Bean
+	public DynamicStimSpecGenerator stimSpecGenerator() {
 		RandomCircleSpecGenerator generator = new RandomCircleSpecGenerator();
 		generator.setSolid(xperStimCircleSolid());
 		generator.setDefaultColor(xperStimDefaultColor());
